@@ -14,6 +14,7 @@ const string delimiter{"Thunderfury"};
 
 void Weapon::calc_proc() 
 {
+    cerr << "Error_Weapon::calc_proc(): did you call this by mistakes?" << endl;
     procTPS=0;
 }
 
@@ -105,6 +106,19 @@ void sort_vec(vector<Weapon*> &weplist, const int sortBy, bool r9)
     weplist = sorted_weplist;
 }
 
+void write_xmlfile(string filename, const vector<Weapon*> &weplist, const int sortBy, bool r9)
+{
+    ifstream file;
+    file.open(filename);
+    if (!file.is_open()) {
+	cerr << "Error_write_xmlfile(): '" << filename
+	     << "' could not be created." << endl;
+	
+	return;
+    }
+    
+}
+
 int main()
 { 
     string filename;
@@ -119,20 +133,21 @@ int main()
 
     cout << "- Weapon TPS calculator - " << endl
 	 << "Filename: ";
-  
-    //cin >> filename;
-    filename = "weplist.tc";
-    file.open(filename);
-    if (!file.is_open()) {
-	cerr << "'" << filename
-	     << "' could not be opened" << endl;
-	return 1;
+
+    while (!file.is_open() && getline(cin, filename)) {
+	file.open(filename);
+	if (file.is_open()) {
+	    break;
+	}
+	cerr << "Error_main(): '" << filename
+	     << "' could not be opened." << endl;
+	cout << "Filename: ";
+	
     }
     cin.clear();
 
     int min=5, steps=10, max=100;
     populate_range(range, min, steps, max);
-    //populate_range(range);
 
     while(getline(file, name) && i < 0) {
 	if (name != "-") {
