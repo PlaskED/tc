@@ -15,7 +15,6 @@ class Weapon
     float dps;
     float speed;
     float procTPS{0};
-    float spamCost;
 
     virtual void calc_proc();
     void calculate_ranges(const std::vector<int> range);

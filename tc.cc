@@ -14,23 +14,22 @@ const string delimiter{"Thunderfury"};
 
 void Weapon::calc_proc() 
 {
-    cerr << "Error_Weapon::calc_proc(): did you call this by mistakes?" << endl;
     procTPS=0;
 }
 
 void Thunderfury::calc_proc() 
 {
-     nrTPS = (float(hasNrdmg)*((16+30)/2.0))*(1.0/speed);
+    nrTPS = (float(hasNrdmg)*((16+30)/2.0))*(1.0/speed);
     rotTPS = ((float(hasSlam)+float(hasRev))
 		    *0.16666666666666666)*(autoProcRate*procThreat);
     //TPS from rotation procs, rot time is 6 sec
-    cout << "procThreat: " << procThreat << endl;
+    /*cout << "procThreat: " << procThreat << endl;
     cout << "autoProcRate: " << autoProcRate << endl;
     cout << "rotTPS: " << rotTPS << endl;
     cout << "nrTPS: " << nrTPS << endl;
     cout << "hasNR: " << hasNrdmg << endl;
     cout << "hasRev: " << hasRev<< endl;
-    cout << "hasSlam: " << hasSlam << endl;
+    cout << "hasSlam: " << hasSlam << endl;*/
 
     procTPS = ((((procThreat*autoProcRate)+rotTPS+nrTPS)*modifier)/speed);
 }
@@ -46,7 +45,7 @@ void Weapon::calculate_ranges(const vector<int> range)
     pair<float,float> sec;
 
     calc_proc();
-    cout << procTPS << endl;
+    //cout << procTPS << endl;
 
     for ( auto it = range.rbegin() ; it != range.rend(); ++it) {
 	int ra = *it;
@@ -95,7 +94,7 @@ void print_vec(const vector<Weapon*> weplist)
 
 void sort_vec(vector<Weapon*> &weplist, const int sortBy, bool r9)
 {
-    cout << "Sorted by field: " << sortBy << endl;
+    //cout << "Sorted by field: " << sortBy << endl;
     vector<Weapon*> sorted_weplist {weplist.begin(), weplist.end()};
     auto sort_lambda = [sortBy] (Weapon* wep1, Weapon* wep2)->bool
 	    {return wep1->tpsVec[sortBy].second.first 
@@ -111,17 +110,41 @@ void sort_vec(vector<Weapon*> &weplist, const int sortBy, bool r9)
     weplist = sorted_weplist;
 }
 
-void write_xmlfile(string filename, const vector<Weapon*> &weplist, const int sortBy, bool r9)
+void write_file(string filename, const vector<Weapon*> &weplist, bool r9)
 {
-    ifstream file;
-    file.open(filename);
+    const char delim{','};
+    string out;
+
+    ofstream file(filename);
     if (!file.is_open()) {
-	cerr << "Error_write_xmlfile(): '" << filename
-	     << "' could not be created." << endl;
-	
+	cerr << "Error_write_file(): '" << filename
+	     << "' could not be created/opened." << endl;
 	return;
     }
     
+    file << "# TPS FOR WEAPONS IN 1.12 WOW DATA BY PLASK.\n# COMPARED BY PERCENTAGE (0-100).\n"; 
+
+    if (!weplist.empty()) {
+	file << "HS Spam %";
+	for ( pair<int, pair<float,float>> pair_ : weplist[0]->tpsVec) {
+	    file << delim << to_string(pair_.first);
+	}
+	file << "\n";
+	for (Weapon* wep : weplist) {
+	    file << wep->name;
+	    for ( pair<int, pair<float,float>> pair_ : wep->tpsVec) {
+		file << delim;
+		if (!r9) {
+		    file << to_string(pair_.second.first); 
+		}
+		else { 
+		    file << to_string(pair_.second.second); 
+		}
+	    }
+	    file << "\n";
+	}
+    }
+    file.close();
 }
 
 int main()
@@ -132,7 +155,6 @@ int main()
     string line, name;
     vector<Weapon*> wepvec;
     float dps, speed;
-    //int min=0, int steps=10, int max=100;
     vector<int> range;
     int i{0};
 
@@ -154,7 +176,7 @@ int main()
     int min=5, steps=10, max=100;
     populate_range(range, min, steps, max);
 
-    while(getline(file, name) && i < 0) {
+    while(getline(file, name) && i < 10) {
 	if (name != "-") {
 	    getline(file,line);
 	    dps = stof(line);
@@ -169,12 +191,14 @@ int main()
 	ss.clear();
 	i++;
     }
+    file.close();
 
-    wepvec.push_back(new Thunderfury("Thunderfury, Blessed Blade of the Windseeker", "Nostalrius", 53.90, 1.90, true, false, true));
+    wepvec.push_back(new Thunderfury("Thunderfury", "Nostalrius", 53.90, 1.90, true, false, true));
     wepvec[wepvec.size()-1]->calculate_ranges(range);
     
     sort_vec(wepvec, 0, false);
-    print_vec(wepvec);
+    //print_vec(wepvec);
+    write_file("data.csv", wepvec, false);
 
     return 0;
 }
