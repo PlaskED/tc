@@ -15,6 +15,7 @@ class Weapon
     float dps;
     float speed;
     float procTPS{0};
+    float spamCost;
 
     virtual void calc_proc();
     void calculate_ranges(const std::vector<int> range);
@@ -24,7 +25,7 @@ class Weapon
 class Thunderfury : public Weapon
 {
  public:
- Thunderfury(std::string name, std::string serv, float dps, float speed, bool hasNr, bool hass, bool hasr) : Weapon(name, dps, speed) {};
+ Thunderfury(std::string name, std::string serv, float dps, float speed, bool hasNr, bool hass, bool hasr) : Weapon(name, dps, speed), hasNrdmg(hasNr), hasSlam(hass), hasRev(hasr) {};
 
     std::string server;
     float autoProcRate{0.25};
@@ -32,10 +33,9 @@ class Thunderfury : public Weapon
     bool hasNrdmg;
     bool hasSlam;
     bool hasRev;
-    float nrTPS = (float(hasNrdmg)*((16+30)/2))*(1/speed);
-    float rotTPS = ((float(hasSlam)+float(hasRev))
-		    *0.16666666666666666)*(autoProcRate*procThreat); 
-    //TPS from rotation procs, rot time is 6 sec
+    float nrTPS = 0;
+    float rotTPS = 0;
+
     void calc_proc();
 };
 

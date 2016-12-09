@@ -20,10 +20,18 @@ void Weapon::calc_proc()
 
 void Thunderfury::calc_proc() 
 {
+     nrTPS = (float(hasNrdmg)*((16+30)/2.0))*(1.0/speed);
+    rotTPS = ((float(hasSlam)+float(hasRev))
+		    *0.16666666666666666)*(autoProcRate*procThreat);
+    //TPS from rotation procs, rot time is 6 sec
     cout << "procThreat: " << procThreat << endl;
     cout << "autoProcRate: " << autoProcRate << endl;
     cout << "rotTPS: " << rotTPS << endl;
     cout << "nrTPS: " << nrTPS << endl;
+    cout << "hasNR: " << hasNrdmg << endl;
+    cout << "hasRev: " << hasRev<< endl;
+    cout << "hasSlam: " << hasSlam << endl;
+
     procTPS = ((((procThreat*autoProcRate)+rotTPS+nrTPS)*modifier)/speed);
 }
 
@@ -37,14 +45,11 @@ void Weapon::calculate_ranges(const vector<int> range)
     pair<int, pair<float,float>> val;
     pair<float,float> sec;
 
-    string token = name.substr(0, name.find(delimiter));
-    if (token.length() > 1) {
-	calc_proc();
-    }
+    calc_proc();
+    cout << procTPS << endl;
 
     for ( auto it = range.rbegin() ; it != range.rend(); ++it) {
 	int ra = *it;
-	cout << procTPS << endl;
 	float r8 = (((hs8*modifier)/speed)*(ra/100.0))+(dps*modifier)+procTPS;
 	float r9 = (((hs9*modifier)/speed)*(ra/100.0))+(dps*modifier)+procTPS;
 	sec.first = r8; 
