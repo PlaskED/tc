@@ -113,8 +113,6 @@ void sort_vec(vector<Weapon*> &weplist, const int sortBy, bool r9)
 void write_file(string filename, const vector<Weapon*> &weplist, bool r9)
 {
     const char delim{','};
-    string out;
-
     ofstream file(filename);
     if (!file.is_open()) {
 	cerr << "Error_write_file(): '" << filename
@@ -127,7 +125,7 @@ void write_file(string filename, const vector<Weapon*> &weplist, bool r9)
     if (!weplist.empty()) {
 	file << "HS Spam %";
 	for ( pair<int, pair<float,float>> pair_ : weplist[0]->tpsVec) {
-	    file << delim << to_string(pair_.first);
+	    file << delim << pair_.first;
 	}
 	file << "\n";
 	for (Weapon* wep : weplist) {
@@ -135,10 +133,10 @@ void write_file(string filename, const vector<Weapon*> &weplist, bool r9)
 	    for ( pair<int, pair<float,float>> pair_ : wep->tpsVec) {
 		file << delim;
 		if (!r9) {
-		    file << to_string(pair_.second.first); 
+		    file << fixed << setprecision(3) << pair_.second.first; 
 		}
 		else { 
-		    file << to_string(pair_.second.second); 
+		    file << fixed << setprecision(3) << pair_.second.second; 
 		}
 	    }
 	    file << "\n";
@@ -176,7 +174,7 @@ int main()
     int min=5, steps=10, max=100;
     populate_range(range, min, steps, max);
 
-    while(getline(file, name) && i < 10) {
+    while(getline(file, name)) {
 	if (name != "-") {
 	    getline(file,line);
 	    dps = stof(line);
@@ -198,7 +196,8 @@ int main()
     
     sort_vec(wepvec, 0, false);
     //print_vec(wepvec);
-    write_file("data.csv", wepvec, false);
+    write_file("datar8.csv", wepvec, false);
+    write_file("datar9.csv", wepvec, true);
 
     return 0;
 }
