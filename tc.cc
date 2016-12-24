@@ -19,14 +19,14 @@ void Weapon::calc_proc()
 
 void Thunderfury::calc_proc() 
 {
-    nrTPS = ((float(hasNrdmg)*((16+30)/2.0))/1.9)*modifier;
-    rotTPS = (((float(hasSlam)*2)+float(hasRev))*0.16666666666666666)
+    float nrTPS = ((float(hasNrdmg)*((16+30)/2.0))/1.9)*modifier;
+    float rotTPS = (((float(hasSlam)*2)+float(hasRev))*(1/6.0))
 	*(procThreat*procRate*modifier);
     //TPS from rotation procs, SS -> RV -> SA -> SS, rot time is 6 sec
 
     /*
     cout << "procThreat: " << procThreat << endl;
-    cout << "autoProcRate: " << autoProcRate << endl;
+    cout << "procRate: " << procRate << endl;
     cout << "rotTPS: " << rotTPS << endl;
     cout << "nrTPS: " << nrTPS << endl;
     cout << "hasNR: " << hasNrdmg << endl;
@@ -37,6 +37,26 @@ void Thunderfury::calc_proc()
     procTPS = (((procThreat*procRate)*modifier)/speed)
 	+ nrTPS + rotTPS;
     //cout << "procTPS: " << procTPS << endl;
+}
+
+void Ironfoe::calc_proc()
+{
+    float extraHits = 2.0;
+    float hitDmg = ((73+136)/2.0);
+    //float rotHits = ((((float(hasSlam)*2)+float(hasRev))*(1/6.0))
+    //*procRate*extraHits);
+    float rotHits = ((((float(hasSlam)*2)+float(hasRev))*(1/6.0))
+		 *procRate*extraHits);
+    float rotTPS = (rotHits*hitDmg)*modifier;
+    cout << "extraHits: " << extraHits << endl;
+    cout << "procRate: " << procRate << endl;
+    cout << "hasRev: " << hasRev<< endl;
+    cout << "hasSlam: " << hasSlam << endl;
+    cout << "rotHits: " << rotHits << endl;
+
+    procTPS = (((hitDmg*procRate*extraHits)*modifier)/speed)
+	+ rotTPS;
+    cout << "procTPS: " << procTPS << endl;
 }
 
 void Weapon::calculate_ranges(const vector<int> range)
@@ -98,7 +118,6 @@ void print_vec(const vector<Weapon*> weplist)
 
 void sort_vec(vector<Weapon*> &weplist, const int sortBy, bool r9)
 {
-    //cout << "Sorted by field: " << sortBy << endl;
     vector<Weapon*> sorted_weplist {weplist.begin(), weplist.end()};
     auto sort_lambda = [sortBy] (Weapon* wep1, Weapon* wep2)->bool
 	    {return wep1->tpsVec[sortBy].second.first 
@@ -124,7 +143,7 @@ void write_file(string filename, const vector<Weapon*> &weplist, bool r9)
 	return;
     }
     
-    file << "# TPS FOR WEAPONS IN 1.12 WOW DATA BY PLASK.\n# COMPARED BY PERCENTAGE (0-100). DPS, TF proc, HS threat and modifier are factored in. Stats are not.\n"; 
+    file << "# TPS FOR WEAPONS IN 1.12 WOW DATA BY PLASK.\n# COMPARED BY PERCENTAGE (0-100). DPS, TF proc, HS threat and modifier are factored in. Stats are not. 6 second rotation witha total 3 instants is assumed.\n"; 
 
     if (!weplist.empty()) {
 	file << "HS Spam %";
@@ -196,6 +215,8 @@ int main()
     file.close();
 
     wepvec.push_back(new Thunderfury("Thunderfury", "Nostalrius", 0.25, 41.90, 1.90, true, true, true));
+    wepvec[wepvec.size()-1]->calculate_ranges(range);
+    wepvec.push_back(new Ironfoe("Ironfoe", "Nostalrius", 0.05, 43.50, 2.40, true, true));
     wepvec[wepvec.size()-1]->calculate_ranges(range);
     
     sort_vec(wepvec, 0, false);
