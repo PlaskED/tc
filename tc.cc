@@ -19,19 +19,24 @@ void Weapon::calc_proc()
 
 void Thunderfury::calc_proc() 
 {
-    nrTPS = (float(hasNrdmg)*((16+30)/2.0))*(1.0/speed);
-    rotTPS = ((float(hasSlam)+float(hasRev))
-		    *0.16666666666666666)*(autoProcRate*procThreat);
-    //TPS from rotation procs, rot time is 6 sec
-    /*cout << "procThreat: " << procThreat << endl;
+    nrTPS = ((float(hasNrdmg)*((16+30)/2.0))/1.9)*modifier;
+    rotTPS = (((float(hasSlam)*2)+float(hasRev))*0.16666666666666666)
+	*(procThreat*autoProcRate*modifier);
+    //TPS from rotation procs, SS -> RV -> SA -> SS, rot time is 6 sec
+
+    /*
+    cout << "procThreat: " << procThreat << endl;
     cout << "autoProcRate: " << autoProcRate << endl;
     cout << "rotTPS: " << rotTPS << endl;
     cout << "nrTPS: " << nrTPS << endl;
     cout << "hasNR: " << hasNrdmg << endl;
     cout << "hasRev: " << hasRev<< endl;
-    cout << "hasSlam: " << hasSlam << endl;*/
+    cout << "hasSlam: " << hasSlam << endl;
+    */
 
-    procTPS = ((((procThreat*autoProcRate)+rotTPS+nrTPS)*modifier)/speed);
+    procTPS = (((procThreat*autoProcRate)*modifier)/speed)
+	+ nrTPS + rotTPS;
+    //cout << "procTPS: " << procTPS << endl;
 }
 
 void Weapon::calculate_ranges(const vector<int> range)
@@ -45,7 +50,6 @@ void Weapon::calculate_ranges(const vector<int> range)
     pair<float,float> sec;
 
     calc_proc();
-    //cout << procTPS << endl;
 
     for ( auto it = range.rbegin() ; it != range.rend(); ++it) {
 	int ra = *it;
@@ -120,7 +124,7 @@ void write_file(string filename, const vector<Weapon*> &weplist, bool r9)
 	return;
     }
     
-    file << "# TPS FOR WEAPONS IN 1.12 WOW DATA BY PLASK.\n# COMPARED BY PERCENTAGE (0-100).\n"; 
+    file << "# TPS FOR WEAPONS IN 1.12 WOW DATA BY PLASK.\n# COMPARED BY PERCENTAGE (0-100). DPS, TF proc, HS threat and modifier are factored in. Stats are not.\n"; 
 
     if (!weplist.empty()) {
 	file << "HS Spam %";
@@ -191,7 +195,7 @@ int main()
     }
     file.close();
 
-    wepvec.push_back(new Thunderfury("Thunderfury", "Nostalrius", 53.90, 1.90, true, false, true));
+    wepvec.push_back(new Thunderfury("Thunderfury", "Nostalrius", 41.90, 1.90, true, true, true));
     wepvec[wepvec.size()-1]->calculate_ranges(range);
     
     sort_vec(wepvec, 0, false);

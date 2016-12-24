@@ -28,7 +28,7 @@ class Thunderfury : public Weapon
 
     std::string server;
     float autoProcRate{0.25};
-    float procThreat{270+92+149};
+    float procThreat{505};//270+92+149};
     bool hasNrdmg;
     bool hasSlam;
     bool hasRev;
@@ -36,6 +36,11 @@ class Thunderfury : public Weapon
     float rotTPS = 0;
 
     void calc_proc();
+};
+
+class Ironfoe : public Weapon
+{
+    
 };
 
 #endif
