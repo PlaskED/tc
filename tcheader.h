@@ -24,11 +24,11 @@ class Weapon
 class Thunderfury : public Weapon
 {
  public:
- Thunderfury(std::string name, std::string serv, float dps, float speed, bool hasNr, bool hass, bool hasr) : Weapon(name, dps, speed), hasNrdmg(hasNr), hasSlam(hass), hasRev(hasr) {};
+ Thunderfury(std::string name, std::string serv, float proc, float dps, float speed, bool hasNr, bool hass, bool hasr) : Weapon(name, dps, speed), procRate(proc), hasNrdmg(hasNr), hasSlam(hass), hasRev(hasr) {};
 
     std::string server;
-    float autoProcRate{0.25};
-    float procThreat{505};//270+92+149};
+    float procRate{0.25};
+    float procThreat{270+92+149};
     bool hasNrdmg;
     bool hasSlam;
     bool hasRev;
@@ -40,6 +40,9 @@ class Thunderfury : public Weapon
 
 class Ironfoe : public Weapon
 {
+ public:
+    std::string server;
+    float procRate{0.05};
     
 };
 

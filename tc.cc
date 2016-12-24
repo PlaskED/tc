@@ -21,7 +21,7 @@ void Thunderfury::calc_proc()
 {
     nrTPS = ((float(hasNrdmg)*((16+30)/2.0))/1.9)*modifier;
     rotTPS = (((float(hasSlam)*2)+float(hasRev))*0.16666666666666666)
-	*(procThreat*autoProcRate*modifier);
+	*(procThreat*procRate*modifier);
     //TPS from rotation procs, SS -> RV -> SA -> SS, rot time is 6 sec
 
     /*
@@ -34,7 +34,7 @@ void Thunderfury::calc_proc()
     cout << "hasSlam: " << hasSlam << endl;
     */
 
-    procTPS = (((procThreat*autoProcRate)*modifier)/speed)
+    procTPS = (((procThreat*procRate)*modifier)/speed)
 	+ nrTPS + rotTPS;
     //cout << "procTPS: " << procTPS << endl;
 }
@@ -195,11 +195,11 @@ int main()
     }
     file.close();
 
-    wepvec.push_back(new Thunderfury("Thunderfury", "Nostalrius", 41.90, 1.90, true, true, true));
+    wepvec.push_back(new Thunderfury("Thunderfury", "Nostalrius", 0.25, 41.90, 1.90, true, true, true));
     wepvec[wepvec.size()-1]->calculate_ranges(range);
     
     sort_vec(wepvec, 0, false);
-    //print_vec(wepvec);
+    print_vec(wepvec);
     write_file("datar8.csv", wepvec, false);
     write_file("datar9.csv", wepvec, true);
 
