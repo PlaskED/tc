@@ -9,13 +9,13 @@ void Thunderfury::calc_proc()
     //TPS from rotation procs, SS -> RV -> SA -> SS, rot time is 6 sec
 
     /*
-    cout << "procThreat: " << procThreat << endl;
-    cout << "procRate: " << procRate << endl;
-    cout << "rotTPS: " << rotTPS << endl;
-    cout << "nrTPS: " << nrTPS << endl;
-    cout << "hasNR: " << hasNrdmg << endl;
-    cout << "hasRev: " << hasRev<< endl;
-    cout << "hasSlam: " << hasSlam << endl;
+      cout << "procThreat: " << procThreat << endl;
+      cout << "procRate: " << procRate << endl;
+      cout << "rotTPS: " << rotTPS << endl;
+      cout << "nrTPS: " << nrTPS << endl;
+      cout << "hasNR: " << hasNrdmg << endl;
+      cout << "hasRev: " << hasRev<< endl;
+      cout << "hasSlam: " << hasSlam << endl;
     */
 
     procTPS = (((procThreat*procRate)*modifier)/speed)
@@ -30,13 +30,13 @@ void Ironfoe::calc_proc()
     float extraHits = 2.0;
     float hitDmg = ((73+136)/2.0);
     float rotHits = ((((float(hasSlam)*2)+float(hasRev))*(1/6.0))
-		 *procRate*extraHits);
+		     *procRate*extraHits);
     float rotTPS = (rotHits*hitDmg)*modifier;
     /*cout << "extraHits: " << extraHits << endl;
-    cout << "procRate: " << procRate << endl;
-    cout << "hasRev: " << hasRev<< endl;
-    cout << "hasSlam: " << hasSlam << endl;
-    cout << "rotHits: " << rotHits << endl;
+      cout << "procRate: " << procRate << endl;
+      cout << "hasRev: " << hasRev<< endl;
+      cout << "hasSlam: " << hasSlam << endl;
+      cout << "rotHits: " << rotHits << endl;
     */
 
     procTPS = (((hitDmg*procRate*extraHits)*modifier)/speed)
@@ -48,7 +48,7 @@ void Viskag::calc_proc()
 {
     float procDmg = 240.0;
     float rotHits = (((float(hasSlam)*2)+float(hasRev))*(1/6.0))
-		 *procRate;
+	*procRate;
     float rotTPS = rotHits*procDmg*modifier;
     procTPS = ((procRate*procDmg*modifier)/speed)+rotTPS;
 
