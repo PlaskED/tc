@@ -1,5 +1,3 @@
-OBJS=tcmain.o tcweapons.o
-
 CC = g++
 CFLAGS = -g -std=c++11 -Wall -fdiagnostics-color=always
 
